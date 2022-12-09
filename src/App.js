@@ -17,10 +17,10 @@ const pokerData = {
     "Caitlyn",
   ],
   games: [
-    "Bet Limit 5 Card Draw",
-    "Bet Limit 7 Card Stud",
-    "No Limit Hold Em",
-    "No Limit Omaha Hi Low Split",
+    "5 Card Draw",
+    "7 Card Stud",
+    "Texas Hold Em",
+    "Omaha Hi Low",
   ],
 };
 
@@ -144,6 +144,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <p>Poker!</p>
+        <img alt="poker chip" src="./poker_chip.svg"></img>
       </header>
       <article className="main-stage">
         <p></p>
@@ -151,8 +152,8 @@ function App() {
         {pokerGameData.map((player) => {
           return (
             <>
-              <div>
-                <p>{player.playerName}</p>
+              <div className="name-and-rebuy">
+                <p className="player-name">{player.playerName}</p>
                 <button
                   onClick={() => {
                     handleRebuy(player);
@@ -182,15 +183,15 @@ function App() {
                 handleInput={handleInput}
                 roundKey={3}
               />
-              <p>Total: {player.chipTotal}</p>
+              <p className="total">Total: <span>{player.chipTotal}</span></p>
             </>
           );
         })}
-        <p>Winners</p>
-        <p>{winners[0]}</p>
-        <p>{winners[1]}</p>
-        <p>{winners[2]}</p>
-        <p>{winners[3]}</p>
+        <p className="winners-title">Winners --></p>
+        <p className="winners">{winners[0]}</p>
+        <p className="winners">{winners[1]}</p>
+        <p className="winners">{winners[2]}</p>
+        <p className="winners">{winners[3]}</p>
         <p></p>
         { isAdminMode() && <div>Admin Tool: 
           <button onClick={() => handleDataLoad()}>Reload Data</button>
