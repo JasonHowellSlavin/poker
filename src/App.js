@@ -29,7 +29,7 @@ const ADMIN_MODE = '?admin=true';
 
 function App() {
   const [pokerGameData, setPokerGameData] = useState([]);
-  const [winners, setWinners] = useState(["", "", "", "", ""]);
+  const [winners, setWinners] = useState(["", "", "", ""]);
 
   // Util Functions 
   const totalRounds = (player) => {
@@ -64,6 +64,13 @@ function App() {
     const chipTotals = totalRounds(selectedPlayer);
     selectedPlayer.chipTotal = chipTotals;
 
+    const winner = calculateWinners(stateCopy, roundKey);
+    console.log('winner', winner)
+    const winnersState = winners;
+    winnersState[roundKey] = winner;
+    setWinners(winnersState);
+
+
     setPokerGameData(stateCopy);
     saveToLocalStorage();
   };
@@ -85,10 +92,8 @@ function App() {
     setPokerGameData(JSON.parse(newState));
   }
 
-  const calculateWinners = (roundIndex) => {
-    const stateCopy = pokerGameData.slice();
-
-    const playersRoundTotals = stateCopy.reduce((totals, player) => {
+  const calculateWinners = (state, roundIndex) => {
+    const playersRoundTotals = state.reduce((totals, player) => {
       totals.push({
         playerName: player.playerName,
         roundTotal: player.roundTotals[roundIndex]
@@ -96,28 +101,22 @@ function App() {
       return totals;
     }, []);
 
-    console.log(playersRoundTotals);
-
     const sortedPlayersByTotal = playersRoundTotals.sort((playerA, playerB) => {
       if (playerA.roundTotal < playerB.roundTotal) return 1;
-      if (playerB.roundTotal > playerB.roundTotal) return -1;
+      if (playerA.roundTotal > playerB.roundTotal) return -1;
       return 0;
     })
 
-    console.log(sortedPlayersByTotal, 'sortedPlayersByTotal');
+    if (sortedPlayersByTotal[0].roundTotal === sortedPlayersByTotal[1].roundTotal) return '';
 
-    // if (sortedPlayersByTotal[0].roundTotal === sortedPlayersByTotal[1].roundTotal) return '';
+    console.log('sorted', sortedPlayersByTotal);
 
-    // return sortedPlayersByTotal[0].plaerName;
-
-    // Here we fill in the winners circle
+    return sortedPlayersByTotal[0].playerName;
   }
 
   const saveToLocalStorage = () => {
     const stateCopy = pokerGameData.slice();
-
     const stringState = JSON.stringify(stateCopy);
-    console.log('saving', stringState);
     localStorage.setItem('state', stringState);
   }
 
@@ -188,10 +187,10 @@ function App() {
           );
         })}
         <p>Winners</p>
-        <p>{calculateWinners(0)}</p>
-        <p>{calculateWinners(1)}</p>
-        <p>{calculateWinners(2)}</p>
-        <p>{calculateWinners(3)}</p>
+        <p>{winners[0]}</p>
+        <p>{winners[1]}</p>
+        <p>{winners[2]}</p>
+        <p>{winners[3]}</p>
         <p></p>
         { isAdminMode() && <div>Admin Tool: 
           <button onClick={() => handleDataLoad()}>Reload Data</button>
